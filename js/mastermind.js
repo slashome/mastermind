@@ -104,6 +104,44 @@ var mm = {
         return row;
     },
 
+    buildInput: function(tableId)
+    {
+        var _this = this;
+        var input = $('<div class="input"><div>Try to break the code !</div></div>');
+        for (var i = 0; i < this.nbColumns; i++) {
+            var inputPawn = this.setInputPawnActions(this.buildPawn());
+            input.append(inputPawn);
+        }
+        return input;
+    },
+
+    setInputPawnActions: function(inputPawn)
+    {
+        var _this = this;
+        inputPawn.click(function(){
+            _this.triggerSelector(inputPawn);
+        });
+        return inputPawn;
+    },
+
+    triggerSelector: function(inputPawn)
+    {
+        var _this = this;
+        var selector = $('<div class="selector"></div>');
+        for (var i = 0; i < this.nbColors; i++) {
+            var pawn = this.buildPawn();
+            pawn.css({backgroundColor:this.colors[i]});
+            pawn.data('colorId', i);
+            pawn.click(function(){
+                var colorId = $(this).data('colorId');
+                inputPawn.css({backgroundColor:_this.colors[colorId]});
+                $('.selector').remove();
+            });
+            selector.append(pawn);
+        }
+        $('body').append(selector);
+    },
+
     /**
      * Build the input
      *

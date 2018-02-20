@@ -1,0 +1,29 @@
+#container {
+	width: 300px;
+	margin: 20px auto;
+}
+.row {
+	padding: 4px;
+	border-bottom: 1px solid #EEE;
+}
+.row:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.row:first-child {
+	border-top: 1px solid #EEE;
+}
+.pawn {
+	float: left;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #666;
+	border-radius: 50%;
+	margin: 2px;
+}
+
+.input {
+	width: 250px;
+	margin: 20px auto 0;
+}

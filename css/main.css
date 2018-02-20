@@ -1,0 +1,56 @@
+body {
+    background-color: #333;
+}
+
+#container {
+    width: 300px;
+    margin: 20px auto;
+    background-color: #EEE;
+    border-radius: 5px;
+}
+.row {
+    padding: 4px;
+    border-bottom: 1px solid #EEE;
+}
+.row:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.row:first-child {
+    border-top: 1px solid #EEE;
+}
+.pawn {
+    float: left;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #666;
+    border-radius: 50%;
+    margin: 2px;
+    background-color: white;
+}
+
+.input {
+    width: 250px;
+    margin: 20px auto 0;
+}
+
+
+.result:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.point {
+    float: left;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #333;
+    border-radius: 50%;
+}
+.point.black {
+    background-color: black;
+}
+.point.white {
+    background-color: white;
+}

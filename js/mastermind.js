@@ -44,7 +44,6 @@ var mm = {
         container.html(this.buildTable());
         container.append(this.buildInput());
         container.prepend(this.buildSecret());
-        container.after(this.buildCopyright());
         $('mastermind').html(container);
     },
 
@@ -364,15 +363,6 @@ var mm = {
         var pawn = $('<div class="pawn empty"></div>');
         return pawn;
     },
-
-    /**
-     * Build the copyright
-     *
-     * @returns {jQuery|HTMLElement}
-     */
-    buildCopyright: function () {
-        return $('<div class="copyright"></div>'');
-    }
 };
 
 mm.run();

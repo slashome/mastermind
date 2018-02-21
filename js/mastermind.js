@@ -239,12 +239,13 @@ var mm = {
             });
         });
 
-        newInputSelection.forEach(function(inputColorId, i){
+        newSecretCode.forEach(function(secretColorId, j){
             var finded = false;
-            newSecretCode.forEach(function(secretColorId, j){
+            newInputSelection.forEach(function(inputColorId, i){
                 if (inputColorId === secretColorId && !finded) {
                     numberOfAlmost++;
                     finded = true;
+                    newInputSelection.splice(i, 1);
                 }
             });
         });

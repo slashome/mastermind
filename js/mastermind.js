@@ -30,7 +30,7 @@ var mm = {
     {
         this.generateColors();
         this.generateSecret();
-        $('body').prepend($('<div class="title">Can you break the code ?<div>'));
+        $('body').prepend($('<div class="title">MasterMind</div><div class="subtitle">Can you break the code ?</div>'));
         var container = $('<div id="container"></div>');
         container.html(this.buildTable());
         container.append(this.buildInput());
@@ -96,7 +96,7 @@ var mm = {
      */
     buildRow: function(rowId)
     {
-        var row = $('<div class="row"></div>');
+        var row = $('<div class="row clearfix"></div>');
         for (var i = 0; i < this.nbColumns; i++) {
             row.addClass('row-'+rowId);
             row.append(this.buildPawn(i));
@@ -107,7 +107,7 @@ var mm = {
     buildInput: function(tableId)
     {
         var _this = this;
-        var input = $('<div class="input"><div>Try to break the code !</div></div>');
+        var input = $('<div class="input clearfix"><div>Try to break the code !</div></div>');
         for (var i = 0; i < this.nbColumns; i++) {
             var inputPawn = this.setInputPawnActions(this.buildPawn());
             input.append(inputPawn);
@@ -286,7 +286,7 @@ var mm = {
         });
 
         var row = $('.row-'+this.currentRow);
-        var result = $('<div class="result"></div>');
+        var result = $('<div class="result clearfix"></div>');
 
         for (var i = 0; i < numberOfEqual; i++) {
             result.append($('<div class="point black"></div>'));

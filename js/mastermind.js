@@ -190,7 +190,7 @@ var mm = {
             });
             selector.append(pawn);
         }
-        $('body').append(selector);
+        $('#container').after(selector);
     },
 
     /**

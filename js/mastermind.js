@@ -7,7 +7,7 @@ var mm = {
     nbColors: 6,
 
     // Number of possible tries
-    nbRows: 10,
+    nbRows: 12,
 
     // DeepMind selected code
     secretCode: [],
@@ -15,25 +15,36 @@ var mm = {
     // Player's choice
     input: [],
 
-    // List of available colors
+    // List of selected colors
     colors: [],
 
+    // List of available colors
+    availableColors: ['yellow','blue','red','green','white','black','purple','pink','orange','cyan','gray','brown','violet'],
+
     // Can be dev or prod
-    env: 'dev',
+    env: 'prod',
 
     currentRow: 0,
+
+    gameover: false,
 
     /**
      * Run mastermind
      */
     run: function ()
     {
-        this.generateColors();
+        if (this.nbColors > this.availableColors.length) {
+            $('body').append('');
+        }
+
+        this.getColors();
         this.generateSecret();
         $('body').prepend($('<div class="title">MasterMind</div><div class="subtitle">Can you break the code ?</div>'));
         var container = $('<div id="container"></div>');
         container.html(this.buildTable());
         container.append(this.buildInput());
+        container.prepend(this.buildSecret());
+        container.after(this.buildCopyright());
         $('mastermind').html(container);
     },
 
@@ -44,23 +55,11 @@ var mm = {
     {
         var table = $('<div id="table"></div>');
         for (var i = 0; i < this.nbRows; i++) {
-            table.append(this.buildRow(i));
+            table.prepend(this.buildRow(i));
         }
         return table;
     },
 
-    /**
-     * Get a random HTML color
-     */
-    getRandomColor: function ()
-    {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    },
 
     /**
      * Generate the secrete code
@@ -71,21 +70,41 @@ var mm = {
             var colorIndex = Math.floor(Math.random() * this.nbColors);
             this.secretCode.push(colorIndex);
         }
+    },
 
-        console.log(this.secretCode);
-
-        if (this.env == 'dev') {
-            var _this = this;
-            var secret = $('<div style="float:left">Secret code :</div>');
-            this.secretCode.forEach(function(i, id){
-                var pawn = _this.buildPawn();
-                pawn.css({backgroundColor:_this.colors[i]});
-                secret.append(pawn);
-            })
-            for (var i = 0; i < this.secretCode; i++) {
-            }
-            $('body').prepend(secret);
+    /**
+     * Create the secret box that will reveal the code at the end
+     *
+     * @returns {jQuery|HTMLElement}
+     */
+    buildSecret: function()
+    {
+        var _this = this;
+        var secret = $('<div class="secret clearfix"><div class="mask">secret code</div></div>');
+        this.secretCode.forEach(function(i, id){
+            var pawn = _this.buildPawn();
+            pawn.css({backgroundColor:_this.colors[i]});
+            secret.append(pawn);
+        });
+        if (this.env === 'dev') {
+            secret.click(function(){
+                _this.revealSecret();
+            });
         }
+        return secret;
+    },
+
+    /**
+     * The action that reveal the secret code
+     */
+    revealSecret: function()
+    {
+        $('.secret .mask').animate({
+            bottom: 36,
+            paddingTop: 0
+        }, 400, function(){
+            $(this).remove();
+        });
     },
 
     /**
@@ -99,47 +118,13 @@ var mm = {
         var row = $('<div class="row clearfix"></div>');
         for (var i = 0; i < this.nbColumns; i++) {
             row.addClass('row-'+rowId);
-            row.append(this.buildPawn(i));
-        }
-        return row;
-    },
-
-    buildInput: function(tableId)
-    {
-        var _this = this;
-        var input = $('<div class="input clearfix"><div>Try to break the code !</div></div>');
-        for (var i = 0; i < this.nbColumns; i++) {
-            var inputPawn = this.setInputPawnActions(this.buildPawn());
-            input.append(inputPawn);
-        }
-        return input;
-    },
-
-    setInputPawnActions: function(inputPawn)
-    {
-        var _this = this;
-        inputPawn.click(function(){
-            _this.triggerSelector(inputPawn);
-        });
-        return inputPawn;
-    },
-
-    triggerSelector: function(inputPawn)
-    {
-        var _this = this;
-        var selector = $('<div class="selector"></div>');
-        for (var i = 0; i < this.nbColors; i++) {
             var pawn = this.buildPawn();
-            pawn.css({backgroundColor:this.colors[i]});
-            pawn.data('colorId', i);
-            pawn.click(function(){
-                var colorId = $(this).data('colorId');
-                inputPawn.css({backgroundColor:_this.colors[colorId]});
-                $('.selector').remove();
-            });
-            selector.append(pawn);
+            pawn.addClass('pawn-'+i);
+            pawn.css({backgroundColor:"#DDD"});
+            row.append(pawn);
         }
-        $('body').append(selector);
+        row.prepend('<div class="num">'+(rowId+1)+'</div>');
+        return row;
     },
 
     /**
@@ -148,10 +133,9 @@ var mm = {
      * @param tableId
      * @returns {jQuery|HTMLElement}
      */
-    buildInput: function(tableId)
+    buildInput: function()
     {
-        var _this = this;
-        var input = $('<div class="input"><div>Try to break the code !</div></div>');
+        var input = $('<div class="input clearfix"></div>');
         for (var i = 0; i < this.nbColumns; i++) {
             var inputPawn = this.setInputPawnActions(this.buildPawn());
             input.append(inputPawn);
@@ -181,16 +165,24 @@ var mm = {
      */
     triggerSelector: function(inputPawn)
     {
+        if (this.gameover){
+            return;
+        }
+        if ($('.selector').length) {
+            $('.selector').remove();
+        }
         var _this = this;
-        var selector = $('<div class="selector"></div>');
+        var selector = $('<div class="selector clearfix"></div>');
         for (var i = 0; i < this.nbColors; i++) {
             var pawn = this.buildPawn();
             pawn.css({backgroundColor:this.colors[i]});
             pawn.data('colorId', i);
+            pawn.removeClass('empty');
             pawn.click(function(){
                 var colorId = $(this).data('colorId');
                 inputPawn.css({backgroundColor:_this.colors[colorId]});
                 inputPawn.data('colorId', colorId);
+                inputPawn.removeClass('empty');
                 $('.selector').remove();
                 var isInputComplete = _this.isInputComplete();
                 if (isInputComplete) {
@@ -241,7 +233,7 @@ var mm = {
                 if (i === j && inputColorId === secretColorId) {
                     // increment equal results
                     numberOfEqual++;
-                } else if (i == j) {
+                } else if (i === j) {
                     newInputSelection.push(inputColorId);
                     newSecretCode.push(secretColorId);
                 }
@@ -259,40 +251,79 @@ var mm = {
         });
 
         if (numberOfEqual === _this.nbColumns) {
-            this.youWin();
+            this.theEnd(true);
         } else {
             this.showResults(inputSelection, numberOfEqual, numberOfAlmost);
         }
     },
 
-    youWin: function()
+    /**
+     * Called when the party is over
+     * @param isWin
+     */
+    theEnd: function(isWin)
     {
-        $('body').html('You broke the code, you hacker !');
+        var _this = this;
+        var message = (isWin) ? 'You broke the code, you hacker !':'You loose, I\'m unbreakable !';
+        var endClass = (isWin) ? 'win':'loose';
+
+        var btnReset = $('<div class="btn-reset">Restart</div>');
+
+        var end = $('<div class="end"></div>');
+        end.addClass(endClass);
+        end.append($('<div class="message">'+message+'</div>'));
+        end.append(btnReset);
+
+        btnReset.click(function(){
+            $('body').html('<mastermind></mastermind>');
+            _this.secretCode = [];
+            _this.input = [];
+            _this.colors = [];
+            _this.currentRow = 0;
+            _this.gameover = false;
+            mm.run();
+        });
+
+        this.revealSecret();
+
+        this.gameover = true;
+
+        $('.subtitle').after(end);
     },
 
-    youLoose: function()
-    {
-        $('body').html('You loose, I\'m unbreakable !');
-    },
-
+    /**
+     * Show the result of the computed input
+     *
+     * @param input
+     * @param numberOfEqual
+     * @param numberOfAlmost
+     */
     showResults: function(input, numberOfEqual, numberOfAlmost)
     {
-        if (this.currentRow === this.nbRows) {
-            this.youLoose();
+        var _this = this;
+
+        if (this.currentRow === this.nbRows - 1) {
+            this.theEnd(false);
         }
 
-        input.forEach(function(colorId, i){
+        var row = $('.row-'+this.currentRow);
+
+        // Append results to the current row
+        input.forEach(function(colorId, i) {
+            var pawn = row.children('.pawn-'+i);
+            pawn.css({backgroundColor:_this.colors[colorId]});
+            pawn.removeClass('empty');
 
         });
 
-        var row = $('.row-'+this.currentRow);
+        this.clearInput();
+
         var result = $('<div class="result clearfix"></div>');
 
         for (var i = 0; i < numberOfEqual; i++) {
             result.append($('<div class="point black"></div>'));
         };
         for (var i = 0; i < numberOfAlmost; i++) {
-            console.log('pouet');
             result.append($('<div class="point white"></div>'));
         };
 
@@ -302,12 +333,24 @@ var mm = {
     },
 
     /**
+     * Clean all the input data for the next tryout
+     */
+    clearInput: function()
+    {
+        $('.input .pawn').each(function(){
+            $(this).removeAttr('style');
+            $(this).removeData('colorId');
+            $(this).addClass('empty');
+        });
+    },
+
+    /**
      * Create the array of colors
      */
-    generateColors: function ()
+    getColors: function ()
     {
         for (var i = 0; i < this.nbColors; i++) {
-            this.colors.push(this.getRandomColor());
+            this.colors.push(this.availableColors[i]);
         }
     },
 
@@ -318,9 +361,18 @@ var mm = {
      */
     buildPawn: function()
     {
-        var pawn = $('<div class="pawn"></div>');
+        var pawn = $('<div class="pawn empty"></div>');
         return pawn;
+    },
+
+    /**
+     * Build the copyright
+     *
+     * @returns {jQuery|HTMLElement}
+     */
+    buildCopyright: function () {
+        return $('<div class="copyright"></div>'');
     }
-}
+};
 
 mm.run();

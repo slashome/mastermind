@@ -8,7 +8,7 @@
 }
 
 /**
- * Pimp my mastermind
+ * Global
  */
 body {
     background-color: #333;
@@ -19,6 +19,8 @@ body {
     width: 300px;
     margin: 30px auto 0;
     text-align: center;
+    color: rgba(0,0,0,0.6);
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.1);
 }
 .title {
     color: #EEE;
@@ -30,45 +32,147 @@ body {
     margin-top: 5px;
 }
 
-#container {
-    width: 300px;
-    margin: 20px auto;
-    background-color: #EEE;
-    border-radius: 5px;
-}
-.row {
-    padding: 4px;
-    border-bottom: 1px solid #EEE;
-}
-.row:first-child {
-    border-top: 1px solid #EEE;
-}
 .pawn {
     float: left;
     width: 20px;
     height: 20px;
     border: 1px solid #666;
     border-radius: 50%;
-    margin: 2px;
-    background-color: white;
+    margin: 2px 6px;
+    background-color: #FAFAFA;
+    -webkit-box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+    -moz-box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+}
+.pawn.empty {
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+/**
+ * Table
+ */
+#container {
+    width: 220px;
+    margin: 20px auto;
+    background-color: #EEE;
+    border-radius: 5px;
+    padding: 15px;
+}
+.row {
+    padding: 4px;
+    border-bottom: 1px solid #DDD;
+}
+.row:first-child {
+    border-top: 1px solid #DDD;
+}
+.row .num {
+    float: left;
+    font-size: 10px;
+    text-align: right;
+    color: #666;
+    padding-top: 8px;
+    margin-right: 4px;
+    width: 14px;
 }
 
+/**
+ * Secret
+ */
+.secret {
+    position: relative;
+    width: 136px;
+    margin: 0 auto 10px;
+    border: 1px solid #CCC;
+    padding: 5px;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+.mask {
+    overflow: hidden;
+    text-align: center;
+    color: #777;
+    padding-top: 10px;
+    background-color: #DDD;
+    text-transform: uppercase;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/**
+ * Player input
+ */
 .input {
-    width: 250px;
-    margin: 20px auto 0;
+    width: 136px;
+    margin: 15px auto 5px;
+}
+.selector {
+    background-color: #222;
+    padding: 10px;
+    border-radius: 6px;
+    width: 205px;
+    margin: 0 auto;
 }
 
+/**
+ * Result
+ */
+.result {
+    float: right;
+    width: 28px;
+}
 .point {
     float: left;
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
     border: 1px solid #333;
-    border-radius: 50%;
+    margin: 3px;
+    border-radius: 100%;
 }
 .point.black {
     background-color: black;
 }
 .point.white {
     background-color: white;
-	border-top: 1px solid #EEE;
 }
+
+/**
+ * The end
+ */
+.end {
+    width: 285px;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 20px;
+    padding: 13px;
+    border-radius: 5px;
+}
+.end.win {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.end.loose {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.end .btn-reset {
+    padding: 6px 10px;
+    display: inline-block;
+    border-radius: 4px;
+    color: white;
+    margin-top: 6px;
+    cursor: pointer;
+}
+.end.win .btn-reset {
+    background-color: #155724;
+}
+.end.loose .btn-reset {
+     background-color: #721c24;
+ }

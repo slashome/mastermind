@@ -1,6 +1,7 @@
 # MasterMindJS
 
 A javascript implementation of the famous MasterMind
+Don't hesitate to comment or contribute 
 
 ### Demo
 http://mastermind.hal9000.im
